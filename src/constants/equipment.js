@@ -1,0 +1,20 @@
+export const EQUIPMENT_TYPES = [
+  { type: 'matte',         label: 'Matte',           color: '#4caf50', w: 2.0,  d: 1.0,  h: 0.1,  category: 'Boden'    },
+  { type: 'bank',          label: 'Bank',             color: '#8bc34a', w: 2.0,  d: 0.3,  h: 0.5,  category: 'Boden'    },
+  { type: 'tisch',         label: 'Tisch',            color: '#795548', w: 1.6,  d: 0.8,  h: 0.75, category: 'Boden'    },
+  { type: 'tor',           label: 'Tor',              color: '#f44336', w: 3.0,  d: 1.0,  h: 2.0,  category: 'Tor'      },
+  { type: 'kleines-tor',   label: 'Kleines Tor',      color: '#ff9800', w: 1.5,  d: 0.8,  h: 1.2,  category: 'Tor'      },
+  { type: 'basketball',    label: 'Basketballkorb',   color: '#ffc107', w: 0.45, d: 0.45, h: 3.05, category: 'Tor'      },
+  { type: 'barren',        label: 'Barren',           color: '#9c27b0', w: 2.0,  d: 0.5,  h: 1.7,  category: 'Turnen'   },
+  { type: 'reck',          label: 'Reck',             color: '#e91e63', w: 2.4,  d: 0.1,  h: 2.5,  category: 'Turnen'   },
+  { type: 'kasten',        label: 'Kasten',           color: '#ff5722', w: 1.2,  d: 0.6,  h: 1.2,  category: 'Turnen'   },
+  { type: 'trampolin',     label: 'Trampolin',        color: '#00bcd4', w: 2.5,  d: 1.5,  h: 1.0,  category: 'Turnen'   },
+  { type: 'pferd',         label: 'Pferd',            color: '#9c27b0', w: 1.6,  d: 0.35, h: 1.2,  category: 'Turnen'   },
+  { type: 'schwebebalken', label: 'Schwebebalken',    color: '#f48fb1', w: 5.0,  d: 0.1,  h: 1.2,  category: 'Turnen'   },
+  { type: 'huetchen',      label: 'Hütchen',          color: '#ffeb3b', w: 0.3,  d: 0.3,  h: 0.3,  category: 'Sonstiges'},
+  { type: 'huerde',        label: 'Hürde',            color: '#ff9800', w: 1.0,  d: 0.1,  h: 0.8,  category: 'Sonstiges'},
+]
+
+export function getEquipmentDef(type) {
+  return EQUIPMENT_TYPES.find((e) => e.type === type) || null
+}
