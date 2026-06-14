@@ -160,19 +160,6 @@ export default function View2D({ canvasRef }) {
 
       drawEquipmentShape(ctx, def, isSel)
 
-      // Label (skip for people — the figure is self-explanatory)
-      if (!def.isPerson) {
-        ctx.fillStyle = '#fff'
-        ctx.shadowColor = 'rgba(0,0,0,0.9)'
-        ctx.shadowBlur = 2 / ppm
-        const fs = Math.max(0.13, Math.min(0.28, Math.min(def.w, def.d) * 0.32))
-        ctx.font = `bold ${fs}px sans-serif`
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'middle'
-        ctx.fillText(def.label, 0, 0)
-        ctx.shadowColor = 'transparent'
-      }
-
       // Selection corners
       if (isSel) {
         const cs = 0.12
