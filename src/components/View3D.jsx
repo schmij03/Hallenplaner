@@ -76,19 +76,60 @@ function SportLinesRenderer({ sportLines }) {
   )
 }
 
+function Person3D({ def }) {
+  const h = def.h
+  return (
+    <group>
+      {/* legs / pants */}
+      <mesh position={[0, h * 0.2, 0]}>
+        <cylinderGeometry args={[h * 0.12, h * 0.1, h * 0.4, 12]} />
+        <meshStandardMaterial color={def.pants} roughness={0.8} />
+      </mesh>
+      {/* torso / shirt */}
+      <mesh position={[0, h * 0.55, 0]}>
+        <cylinderGeometry args={[h * 0.16, h * 0.14, h * 0.4, 12]} />
+        <meshStandardMaterial color={def.shirt} roughness={0.7} />
+      </mesh>
+      {/* head */}
+      <mesh position={[0, h * 0.88, 0]}>
+        <sphereGeometry args={[h * 0.13, 16, 16]} />
+        <meshStandardMaterial color={def.skin} roughness={0.6} />
+      </mesh>
+      {/* hair cap */}
+      <mesh position={[0, h * 0.93, 0]}>
+        <sphereGeometry args={[h * 0.135, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color={def.hair} roughness={0.7} />
+      </mesh>
+    </group>
+  )
+}
+
 function EquipmentItems({ equipment }) {
   return (
     <>
       {equipment.map((item) => {
         const def = getEquipmentDef(item.type)
         if (!def) return null
-        const posX = item.x + def.w / 2
-        const posY = def.h / 2
-        const posZ = item.y + def.d / 2
         const rotY = -((item.rotation || 0) * Math.PI) / 180
 
+        if (def.isPerson) {
+          return (
+            <group
+              key={item.id}
+              position={[item.x + def.w / 2, 0, item.y + def.d / 2]}
+              rotation={[0, rotY, 0]}
+            >
+              <Person3D def={def} />
+            </group>
+          )
+        }
+
         return (
-          <group key={item.id} position={[posX, posY, posZ]} rotation={[0, rotY, 0]}>
+          <group
+            key={item.id}
+            position={[item.x + def.w / 2, def.h / 2, item.y + def.d / 2]}
+            rotation={[0, rotY, 0]}
+          >
             <mesh>
               <boxGeometry args={[def.w, def.h, def.d]} />
               <meshStandardMaterial color={def.color} roughness={0.6} />
@@ -96,11 +137,11 @@ function EquipmentItems({ equipment }) {
             <Text
               position={[0, def.h / 2 + 0.3, 0]}
               fontSize={0.4}
-              color="white"
+              color="#222"
               anchorX="center"
               anchorY="middle"
-              outlineWidth={0.02}
-              outlineColor="black"
+              outlineWidth={0.025}
+              outlineColor="white"
             >
               {def.label}
             </Text>
@@ -125,7 +166,7 @@ export default function View3D({ threeRef }) {
   return (
     <Canvas
       camera={{ position: [20, 25, 40], fov: 50, near: 0.1, far: 500 }}
-      style={{ width: '100%', height: '100%', background: '#1a1a2e' }}
+      style={{ width: '100%', height: '100%', background: '#dce4ec' }}
       gl={{ preserveDrawingBuffer: true }}
     >
       <SceneCapture threeRef={threeRef} />

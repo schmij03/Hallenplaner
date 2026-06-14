@@ -99,7 +99,7 @@ export default function View2D({ canvasRef }) {
     const { equipment, selectedId, sportLines, drawings } = stateRef.current
 
     ctx.clearRect(0, 0, W, H)
-    ctx.fillStyle = '#1a1a2e'
+    ctx.fillStyle = '#e9edf2'
     ctx.fillRect(0, 0, W, H)
 
     ctx.save()
@@ -160,16 +160,18 @@ export default function View2D({ canvasRef }) {
 
       drawEquipmentShape(ctx, def, isSel)
 
-      // Label
-      ctx.fillStyle = '#fff'
-      ctx.shadowColor = 'rgba(0,0,0,0.9)'
-      ctx.shadowBlur = 2 / ppm
-      const fs = Math.max(0.13, Math.min(0.28, Math.min(def.w, def.d) * 0.32))
-      ctx.font = `bold ${fs}px sans-serif`
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      ctx.fillText(def.label, 0, 0)
-      ctx.shadowColor = 'transparent'
+      // Label (skip for people — the figure is self-explanatory)
+      if (!def.isPerson) {
+        ctx.fillStyle = '#fff'
+        ctx.shadowColor = 'rgba(0,0,0,0.9)'
+        ctx.shadowBlur = 2 / ppm
+        const fs = Math.max(0.13, Math.min(0.28, Math.min(def.w, def.d) * 0.32))
+        ctx.font = `bold ${fs}px sans-serif`
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(def.label, 0, 0)
+        ctx.shadowColor = 'transparent'
+      }
 
       // Selection corners
       if (isSel) {
