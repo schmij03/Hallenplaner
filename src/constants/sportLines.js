@@ -1,19 +1,34 @@
 const CX = 20
 const CY = 10
 
+function arc(cx, cy, r, a1, a2, n = 32) {
+  const segs = []
+  for (let i = 0; i < n; i++) {
+    const t1 = a1 + (i / n) * (a2 - a1)
+    const t2 = a1 + ((i + 1) / n) * (a2 - a1)
+    segs.push({
+      x1: cx + Math.cos(t1) * r, y1: cy + Math.sin(t1) * r,
+      x2: cx + Math.cos(t2) * r, y2: cy + Math.sin(t2) * r,
+    })
+  }
+  return segs
+}
+
+const TAU = Math.PI * 2
+
 export const SPORT_LINES = {
   volleyball: {
     label: 'Volleyball',
     color: '#ffffff',
     lines: [
-      // Boundary 18x9 centered
+      // Field 18×9 centered
       { x1: 11, y1: 5.5, x2: 29, y2: 5.5 },
       { x1: 29, y1: 5.5, x2: 29, y2: 14.5 },
       { x1: 29, y1: 14.5, x2: 11, y2: 14.5 },
       { x1: 11, y1: 14.5, x2: 11, y2: 5.5 },
-      // Net at x=20
+      // Net
       { x1: 20, y1: 5.5, x2: 20, y2: 14.5 },
-      // Attack lines
+      // Attack lines 3 m from net
       { x1: 17, y1: 5.5, x2: 17, y2: 14.5 },
       { x1: 23, y1: 5.5, x2: 23, y2: 14.5 },
     ],
@@ -24,112 +39,54 @@ export const SPORT_LINES = {
     color: '#ff8c00',
     lines: (() => {
       const segs = []
-      // Boundary 28x15 centered: x from 6 to 34, y from 2.5 to 17.5
+      // Field 28×15 centered: x 6–34, y 2.5–17.5
       segs.push({ x1: 6, y1: 2.5, x2: 34, y2: 2.5 })
       segs.push({ x1: 34, y1: 2.5, x2: 34, y2: 17.5 })
       segs.push({ x1: 34, y1: 17.5, x2: 6, y2: 17.5 })
       segs.push({ x1: 6, y1: 17.5, x2: 6, y2: 2.5 })
-      // Half-court line
       segs.push({ x1: 20, y1: 2.5, x2: 20, y2: 17.5 })
 
-      // Center circle r=1.8 (approximated as polygon)
-      const ccR = 1.8
-      const ccSegs = 32
-      for (let i = 0; i < ccSegs; i++) {
-        const a1 = (i / ccSegs) * Math.PI * 2
-        const a2 = ((i + 1) / ccSegs) * Math.PI * 2
-        segs.push({
-          x1: CX + Math.cos(a1) * ccR,
-          y1: CY + Math.sin(a1) * ccR,
-          x2: CX + Math.cos(a2) * ccR,
-          y2: CY + Math.sin(a2) * ccR,
-        })
-      }
+      // Center circle r=1.8
+      segs.push(...arc(CX, CY, 1.8, 0, TAU, 32))
 
-      // Left key: 5.8m from baseline, 4.9m wide centered
-      // Basket at x=7.575, y=10
-      const lbx = 6 // baseline
-      const lkeyW = 5.8
-      const lkeyH = 4.9
-      segs.push({ x1: lbx, y1: CY - lkeyH / 2, x2: lbx + lkeyW, y2: CY - lkeyH / 2 })
-      segs.push({ x1: lbx + lkeyW, y1: CY - lkeyH / 2, x2: lbx + lkeyW, y2: CY + lkeyH / 2 })
-      segs.push({ x1: lbx + lkeyW, y1: CY + lkeyH / 2, x2: lbx, y2: CY + lkeyH / 2 })
+      // Keys (lane): 5.8 m long, 4.9 m wide
+      const kw = 5.8, kh = 4.9
+      segs.push({ x1: 6, y1: CY - kh / 2, x2: 6 + kw, y2: CY - kh / 2 })
+      segs.push({ x1: 6 + kw, y1: CY - kh / 2, x2: 6 + kw, y2: CY + kh / 2 })
+      segs.push({ x1: 6 + kw, y1: CY + kh / 2, x2: 6, y2: CY + kh / 2 })
+      segs.push({ x1: 34, y1: CY - kh / 2, x2: 34 - kw, y2: CY - kh / 2 })
+      segs.push({ x1: 34 - kw, y1: CY - kh / 2, x2: 34 - kw, y2: CY + kh / 2 })
+      segs.push({ x1: 34 - kw, y1: CY + kh / 2, x2: 34, y2: CY + kh / 2 })
 
-      // Right key mirrored: baseline at x=34
-      const rbx = 34
-      segs.push({ x1: rbx, y1: CY - lkeyH / 2, x2: rbx - lkeyW, y2: CY - lkeyH / 2 })
-      segs.push({ x1: rbx - lkeyW, y1: CY - lkeyH / 2, x2: rbx - lkeyW, y2: CY + lkeyH / 2 })
-      segs.push({ x1: rbx - lkeyW, y1: CY + lkeyH / 2, x2: rbx, y2: CY + lkeyH / 2 })
+      // Free-throw circles r=1.8
+      segs.push(...arc(6 + kw, CY, 1.8, 0, TAU, 32))
+      segs.push(...arc(34 - kw, CY, 1.8, 0, TAU, 32))
 
-      // Free throw circles r=1.8 at key top
-      const ftR = 1.8
-      const ftSegs = 32
-      const lftx = lbx + lkeyW // left free throw line center x
-      const rftx = rbx - lkeyW
-      for (let i = 0; i < ftSegs; i++) {
-        const a1 = (i / ftSegs) * Math.PI * 2
-        const a2 = ((i + 1) / ftSegs) * Math.PI * 2
-        segs.push({
-          x1: lftx + Math.cos(a1) * ftR,
-          y1: CY + Math.sin(a1) * ftR,
-          x2: lftx + Math.cos(a2) * ftR,
-          y2: CY + Math.sin(a2) * ftR,
-        })
-        segs.push({
-          x1: rftx + Math.cos(a1) * ftR,
-          y1: CY + Math.sin(a1) * ftR,
-          x2: rftx + Math.cos(a2) * ftR,
-          y2: CY + Math.sin(a2) * ftR,
-        })
-      }
-
-      // 3-point lines: arc r=6.75 from baskets, with straight corner portions
+      // 3-point lines: arc r=6.75, basket 1.575 m from baseline
+      // Corner portions at y=CY±6.6 (0.9 m from sideline), straight to baseline
       const r3 = 6.75
-      const lBasketX = 7.575
-      const rBasketX = 32.425
-      const cornerY1 = 3.4
-      const cornerY2 = 16.6
+      const lbx = 7.575   // left basket x
+      const rbx = 32.425  // right basket x
+      const dy = 6.6      // |basket.y - corner.y|
+      const dx = Math.sqrt(r3 * r3 - dy * dy)  // ≈ 1.415
+      const cy1 = CY - dy  // 3.4
+      const cy2 = CY + dy  // 16.6
 
-      // Left 3pt: straight corner portions
-      segs.push({ x1: lbx, y1: cornerY1, x2: lbx + Math.sqrt(r3 * r3 - (CY - cornerY1) ** 2), y2: cornerY1 })
-      segs.push({ x1: lbx, y1: cornerY2, x2: lbx + Math.sqrt(r3 * r3 - (CY - cornerY2) ** 2), y2: cornerY2 })
+      // Left straight corners
+      segs.push({ x1: 6, y1: cy1, x2: lbx + dx, y2: cy1 })
+      segs.push({ x1: 6, y1: cy2, x2: lbx + dx, y2: cy2 })
+      // Left arc from cy1 to cy2 around the basket (right-hand side)
+      const aTop = Math.atan2(cy1 - CY, dx)   // ≈ −1.36 rad
+      const aBot = Math.atan2(cy2 - CY, dx)   // ≈ +1.36 rad
+      segs.push(...arc(lbx, CY, r3, aTop, aBot, 32))
 
-      // Left 3pt arc (only the part that is inside the court)
-      const arcSegs = 48
-      for (let i = 0; i <= arcSegs; i++) {
-        const a = -Math.PI / 2 + (i / arcSegs) * Math.PI
-        const px = lBasketX + Math.cos(a) * r3
-        const py = CY + Math.sin(a) * r3
-        if (py < cornerY1 || py > cornerY2) continue
-        if (i > 0) {
-          const prevA = -Math.PI / 2 + ((i - 1) / arcSegs) * Math.PI
-          const prevPx = lBasketX + Math.cos(prevA) * r3
-          const prevPy = CY + Math.sin(prevA) * r3
-          if (prevPy >= cornerY1 && prevPy <= cornerY2) {
-            segs.push({ x1: prevPx, y1: prevPy, x2: px, y2: py })
-          }
-        }
-      }
-
-      // Right 3pt straight corners
-      segs.push({ x1: rbx, y1: cornerY1, x2: rbx - Math.sqrt(r3 * r3 - (CY - cornerY1) ** 2), y2: cornerY1 })
-      segs.push({ x1: rbx, y1: cornerY2, x2: rbx - Math.sqrt(r3 * r3 - (CY - cornerY2) ** 2), y2: cornerY2 })
-
-      // Right 3pt arc
-      for (let i = 0; i <= arcSegs; i++) {
-        const a = Math.PI / 2 + (i / arcSegs) * Math.PI
-        const px = rBasketX + Math.cos(a) * r3
-        const py = CY + Math.sin(a) * r3
-        if (py < cornerY1 || py > cornerY2) continue
-        if (i > 0) {
-          const prevA = Math.PI / 2 + ((i - 1) / arcSegs) * Math.PI
-          const prevPx = rBasketX + Math.cos(prevA) * r3
-          const prevPy = CY + Math.sin(prevA) * r3
-          if (prevPy >= cornerY1 && prevPy <= cornerY2) {
-            segs.push({ x1: prevPx, y1: prevPy, x2: px, y2: py })
-          }
-        }
-      }
+      // Right straight corners
+      segs.push({ x1: 34, y1: cy1, x2: rbx - dx, y2: cy1 })
+      segs.push({ x1: 34, y1: cy2, x2: rbx - dx, y2: cy2 })
+      // Right arc (left-hand side of right basket)
+      const aTopR = Math.PI - aBot   // ≈ 1.78 rad
+      const aBotR = Math.PI - aTop   // ≈ 4.50 rad
+      segs.push(...arc(rbx, CY, r3, aTopR, aBotR, 32))
 
       return segs
     })(),
@@ -140,135 +97,47 @@ export const SPORT_LINES = {
     color: '#87ceeb',
     lines: (() => {
       const segs = []
-      // Boundary
+      // Full court boundary
       segs.push({ x1: 0, y1: 0, x2: 40, y2: 0 })
       segs.push({ x1: 40, y1: 0, x2: 40, y2: 20 })
       segs.push({ x1: 40, y1: 20, x2: 0, y2: 20 })
       segs.push({ x1: 0, y1: 20, x2: 0, y2: 0 })
-      // Center line
       segs.push({ x1: 20, y1: 0, x2: 20, y2: 20 })
+      segs.push(...arc(CX, CY, 3, 0, TAU, 48))
 
-      // Center circle r=3
-      const ccR = 3
-      const ccSegs = 48
-      for (let i = 0; i < ccSegs; i++) {
-        const a1 = (i / ccSegs) * Math.PI * 2
-        const a2 = ((i + 1) / ccSegs) * Math.PI * 2
-        segs.push({
-          x1: CX + Math.cos(a1) * ccR,
-          y1: CY + Math.sin(a1) * ccR,
-          x2: CX + Math.cos(a2) * ccR,
-          y2: CY + Math.sin(a2) * ccR,
-        })
-      }
+      // Goals 3 m wide, posts at y=8.5 and y=11.5
+      ;[{ ox: 0, dir: -1 }, { ox: 40, dir: 1 }].forEach(({ ox, dir }) => {
+        const gx = ox + dir * 1.0
+        segs.push({ x1: ox, y1: 8.5, x2: gx, y2: 8.5 })
+        segs.push({ x1: gx, y1: 8.5, x2: gx, y2: 11.5 })
+        segs.push({ x1: gx, y1: 11.5, x2: ox, y2: 11.5 })
 
-      // Goals: left x=-1 to 0, y=8.5 to 11.5; right x=40 to 41, y=8.5 to 11.5
-      segs.push({ x1: 0, y1: 8.5, x2: -1, y2: 8.5 })
-      segs.push({ x1: -1, y1: 8.5, x2: -1, y2: 11.5 })
-      segs.push({ x1: -1, y1: 11.5, x2: 0, y2: 11.5 })
-      segs.push({ x1: 40, y1: 8.5, x2: 41, y2: 8.5 })
-      segs.push({ x1: 41, y1: 8.5, x2: 41, y2: 11.5 })
-      segs.push({ x1: 41, y1: 11.5, x2: 40, y2: 11.5 })
+        // 6 m goal area: quarter arcs from each post + straight connector
+        segs.push(...arc(ox, 8.5, 6, -Math.PI / 2 * dir, 0, 20))
+        segs.push(...arc(ox, 11.5, 6, 0, Math.PI / 2 * dir, 20))
+        segs.push({ x1: ox + dir * 6, y1: 8.5, x2: ox + dir * 6, y2: 11.5 })
 
-      // Goal areas (6m line): quarter arcs r=6 from posts at (0,8.5) and (0,11.5)
-      const goalR = 6
-      const arcN = 32
-      // Left side: arc from post at (0,8.5), quarter arc going right
-      for (let i = 0; i <= arcN; i++) {
-        const a1 = (i / arcN) * (Math.PI / 2) // 0 to 90deg
-        const a2 = ((i + 1) / arcN) * (Math.PI / 2)
-        if (i < arcN) {
+        // 9 m dashed line (drawn as dashes via every-other segment)
+        const n9 = 48
+        for (let i = 0; i < n9; i++) {
+          if (i % 4 >= 2) continue  // dash pattern
+          const a1 = (i / n9) * (Math.PI / 2)
+          const a2 = ((i + 1) / n9) * (Math.PI / 2)
           segs.push({
-            x1: 0 + Math.cos(a1) * goalR,
-            y1: 8.5 - Math.sin(a1) * goalR,
-            x2: 0 + Math.cos(a2) * goalR,
-            y2: 8.5 - Math.sin(a2) * goalR,
+            x1: ox + Math.cos(a1 * dir) * 9, y1: 8.5 - Math.sin(a1) * 9,
+            x2: ox + Math.cos(a2 * dir) * 9, y2: 8.5 - Math.sin(a2) * 9,
+          })
+          segs.push({
+            x1: ox + Math.cos(a1 * dir) * 9, y1: 11.5 + Math.sin(a1) * 9,
+            x2: ox + Math.cos(a2 * dir) * 9, y2: 11.5 + Math.sin(a2) * 9,
           })
         }
-      }
-      for (let i = 0; i <= arcN; i++) {
-        const a1 = (i / arcN) * (Math.PI / 2)
-        const a2 = ((i + 1) / arcN) * (Math.PI / 2)
-        if (i < arcN) {
-          segs.push({
-            x1: 0 + Math.cos(a1) * goalR,
-            y1: 11.5 + Math.sin(a1) * goalR,
-            x2: 0 + Math.cos(a2) * goalR,
-            y2: 11.5 + Math.sin(a2) * goalR,
-          })
-        }
-      }
-      // Connect arcs with straight line at x=6
-      segs.push({ x1: goalR, y1: 8.5, x2: goalR, y2: 11.5 })
+        segs.push({ x1: ox + dir * 9, y1: 8.5, x2: ox + dir * 9, y2: 11.5 })
 
-      // 9m dashed line (simplified as solid): arcs r=9
-      const nineR = 9
-      const nineN = 48
-      for (let i = 0; i <= nineN; i++) {
-        const a1 = (i / nineN) * (Math.PI / 2)
-        const a2 = ((i + 1) / nineN) * (Math.PI / 2)
-        if (i < nineN && i % 4 < 2) { // dashed effect
-          segs.push({
-            x1: 0 + Math.cos(a1) * nineR,
-            y1: 8.5 - Math.sin(a1) * nineR,
-            x2: 0 + Math.cos(a2) * nineR,
-            y2: 8.5 - Math.sin(a2) * nineR,
-          })
-          segs.push({
-            x1: 0 + Math.cos(a1) * nineR,
-            y1: 11.5 + Math.sin(a1) * nineR,
-            x2: 0 + Math.cos(a2) * nineR,
-            y2: 11.5 + Math.sin(a2) * nineR,
-          })
-        }
-      }
-      segs.push({ x1: nineR, y1: 8.5, x2: nineR, y2: 11.5 })
-
-      // Left penalty mark at x=7, y=10 (small cross)
-      segs.push({ x1: 6.8, y1: 10, x2: 7.2, y2: 10 })
-
-      // Right side mirror (at x=40)
-      for (let i = 0; i <= arcN; i++) {
-        const a1 = (i / arcN) * (Math.PI / 2)
-        const a2 = ((i + 1) / arcN) * (Math.PI / 2)
-        if (i < arcN) {
-          segs.push({
-            x1: 40 - Math.cos(a1) * goalR,
-            y1: 8.5 - Math.sin(a1) * goalR,
-            x2: 40 - Math.cos(a2) * goalR,
-            y2: 8.5 - Math.sin(a2) * goalR,
-          })
-          segs.push({
-            x1: 40 - Math.cos(a1) * goalR,
-            y1: 11.5 + Math.sin(a1) * goalR,
-            x2: 40 - Math.cos(a2) * goalR,
-            y2: 11.5 + Math.sin(a2) * goalR,
-          })
-        }
-      }
-      segs.push({ x1: 40 - goalR, y1: 8.5, x2: 40 - goalR, y2: 11.5 })
-
-      for (let i = 0; i <= nineN; i++) {
-        const a1 = (i / nineN) * (Math.PI / 2)
-        const a2 = ((i + 1) / nineN) * (Math.PI / 2)
-        if (i < nineN && i % 4 < 2) {
-          segs.push({
-            x1: 40 - Math.cos(a1) * nineR,
-            y1: 8.5 - Math.sin(a1) * nineR,
-            x2: 40 - Math.cos(a2) * nineR,
-            y2: 8.5 - Math.sin(a2) * nineR,
-          })
-          segs.push({
-            x1: 40 - Math.cos(a1) * nineR,
-            y1: 11.5 + Math.sin(a1) * nineR,
-            x2: 40 - Math.cos(a2) * nineR,
-            y2: 11.5 + Math.sin(a2) * nineR,
-          })
-        }
-      }
-      segs.push({ x1: 40 - nineR, y1: 8.5, x2: 40 - nineR, y2: 11.5 })
-      // Right penalty mark
-      segs.push({ x1: 33.2, y1: 10, x2: 32.8, y2: 10 })
+        // 7 m penalty mark
+        const pm = ox + dir * 7
+        segs.push({ x1: pm - 0.2, y1: CY, x2: pm + 0.2, y2: CY })
+      })
 
       return segs
     })(),
@@ -276,55 +145,56 @@ export const SPORT_LINES = {
 
   badminton: {
     label: 'Badminton',
-    color: '#00ff00',
+    color: '#00e676',
     lines: (() => {
       const segs = []
-      // 3 courts arranged along y axis
-      // Court dims: 13.4m long (x), 6.1m wide (y)
-      // Centered in 40m: from x=13.3 to x=26.7
-      const cx1 = 13.3
-      const cx2 = 26.7
-      const courtLen = cx2 - cx1 // 13.4m
-      const courtW = 6.1
-      const netX = (cx1 + cx2) / 2 // x=20
+      // 3 courts across the hall width (y direction).
+      // Court: 13.4 m long (y), 6.1 m wide (x).
+      // 3 × 6.1 m = 18.3 m → starts at x = (40−18.3)/2 = 10.85 m
+      // Court y-extent: (20−13.4)/2 = 3.3 to 16.7 m
+      const courtLen = 13.4
+      const courtWid = 6.1
+      const x0 = (40 - 3 * courtWid) / 2   // 10.85
+      const y1 = (20 - courtLen) / 2         // 3.3
+      const y2 = y1 + courtLen               // 16.7
+      const netY = CY                         // 10.0
+      const sslY1 = netY - 1.98              // 8.02  short service line
+      const sslY2 = netY + 1.98              // 11.98
+      const lslY1 = y1 + 0.76               // 4.06  long service line (doubles)
+      const lslY2 = y2 - 0.76               // 15.94
+      const singOff = 0.46                   // singles sideline inset
 
-      // Short service line: 1.98m from net
-      const sslDist = 1.98
-      // Long service line (doubles): 0.76m from baseline
-      const lslDist = 0.76
-      // Singles sideline: 0.46m in from doubles sideline
+      for (let i = 0; i < 3; i++) {
+        const cx1 = x0 + i * courtWid
+        const cx2 = cx1 + courtWid
+        const scx1 = cx1 + singOff          // singles inner left
+        const scx2 = cx2 - singOff          // singles inner right
+        const xMid = (cx1 + cx2) / 2
 
-      // 3 courts: y positions
-      const courts = [
-        { y1: 0.85, y2: 6.95 },
-        { y1: 6.95, y2: 13.05 },
-        { y1: 13.05, y2: 19.15 },
-      ]
-
-      courts.forEach(({ y1, y2 }) => {
-        const singleY1 = y1 + 0.46
-        const singleY2 = y2 - 0.46
         // Outer doubles boundary
         segs.push({ x1: cx1, y1, x2: cx2, y2: y1 })
         segs.push({ x1: cx2, y1, x2: cx2, y2: y2 })
         segs.push({ x1: cx2, y1: y2, x2: cx1, y2: y2 })
         segs.push({ x1: cx1, y1: y2, x2: cx1, y2: y1 })
-        // Singles sidelines
-        segs.push({ x1: cx1, y1: singleY1, x2: cx2, y2: singleY1 })
-        segs.push({ x1: cx1, y1: singleY2, x2: cx2, y2: singleY2 })
-        // Net line
-        segs.push({ x1: netX, y1, x2: netX, y2: y2 })
-        // Short service lines
-        segs.push({ x1: netX - sslDist, y1, x2: netX - sslDist, y2: y2 })
-        segs.push({ x1: netX + sslDist, y1, x2: netX + sslDist, y2: y2 })
-        // Long service lines (doubles rear boundary inside)
-        segs.push({ x1: cx1 + lslDist, y1, x2: cx1 + lslDist, y2: y2 })
-        segs.push({ x1: cx2 - lslDist, y1, x2: cx2 - lslDist, y2: y2 })
-        // Center service line (perpendicular, splits court width)
-        const yMid = (y1 + y2) / 2
-        segs.push({ x1: cx1, y1: yMid, x2: cx2, y2: yMid })
-      })
 
+        // Singles sidelines (inner vertical lines)
+        segs.push({ x1: scx1, y1, x2: scx1, y2: y2 })
+        segs.push({ x1: scx2, y1, x2: scx2, y2: y2 })
+
+        // Net (horizontal)
+        segs.push({ x1: cx1, y1: netY, x2: cx2, y2: netY })
+
+        // Short service lines (horizontal, full court width)
+        segs.push({ x1: cx1, y1: sslY1, x2: cx2, y2: sslY1 })
+        segs.push({ x1: cx1, y1: sslY2, x2: cx2, y2: sslY2 })
+
+        // Long service lines for doubles (horizontal)
+        segs.push({ x1: cx1, y1: lslY1, x2: cx2, y2: lslY1 })
+        segs.push({ x1: cx1, y1: lslY2, x2: cx2, y2: lslY2 })
+
+        // Center service line (vertical, full court length)
+        segs.push({ x1: xMid, y1, x2: xMid, y2: y2 })
+      }
       return segs
     })(),
   },
@@ -334,54 +204,36 @@ export const SPORT_LINES = {
     color: '#ffff00',
     lines: (() => {
       const segs = []
-      // Futsal/small football 40x20
+      // Futsal 40×20
       segs.push({ x1: 0, y1: 0, x2: 40, y2: 0 })
       segs.push({ x1: 40, y1: 0, x2: 40, y2: 20 })
       segs.push({ x1: 40, y1: 20, x2: 0, y2: 20 })
       segs.push({ x1: 0, y1: 20, x2: 0, y2: 0 })
-      // Center line
       segs.push({ x1: 20, y1: 0, x2: 20, y2: 20 })
-      // Center circle r=3
-      const ccR = 3
-      const ccSegs = 48
-      for (let i = 0; i < ccSegs; i++) {
-        const a1 = (i / ccSegs) * Math.PI * 2
-        const a2 = ((i + 1) / ccSegs) * Math.PI * 2
-        segs.push({
-          x1: CX + Math.cos(a1) * ccR,
-          y1: CY + Math.sin(a1) * ccR,
-          x2: CX + Math.cos(a2) * ccR,
-          y2: CY + Math.sin(a2) * ccR,
-        })
-      }
-      // Left penalty area: rect(0, 2, 6, 16)
-      segs.push({ x1: 0, y1: 2, x2: 6, y2: 2 })
-      segs.push({ x1: 6, y1: 2, x2: 6, y2: 18 })
-      segs.push({ x1: 6, y1: 18, x2: 0, y2: 18 })
-      // Left goal area: rect(0, 6, 3, 8)
-      segs.push({ x1: 0, y1: 6, x2: 3, y2: 6 })
-      segs.push({ x1: 3, y1: 6, x2: 3, y2: 14 })
-      segs.push({ x1: 3, y1: 14, x2: 0, y2: 14 })
-      // Left goal
-      segs.push({ x1: 0, y1: 8.5, x2: -0.8, y2: 8.5 })
-      segs.push({ x1: -0.8, y1: 8.5, x2: -0.8, y2: 11.5 })
-      segs.push({ x1: -0.8, y1: 11.5, x2: 0, y2: 11.5 })
-      // Left penalty spot
-      segs.push({ x1: 5.8, y1: 9.9, x2: 6.2, y2: 10.1 })
-      segs.push({ x1: 5.8, y1: 10.1, x2: 6.2, y2: 9.9 })
+      segs.push(...arc(CX, CY, 3, 0, TAU, 48))
 
-      // Right side mirror
-      segs.push({ x1: 40, y1: 2, x2: 34, y2: 2 })
-      segs.push({ x1: 34, y1: 2, x2: 34, y2: 18 })
-      segs.push({ x1: 34, y1: 18, x2: 40, y2: 18 })
-      segs.push({ x1: 40, y1: 6, x2: 37, y2: 6 })
-      segs.push({ x1: 37, y1: 6, x2: 37, y2: 14 })
-      segs.push({ x1: 37, y1: 14, x2: 40, y2: 14 })
-      segs.push({ x1: 40, y1: 8.5, x2: 40.8, y2: 8.5 })
-      segs.push({ x1: 40.8, y1: 8.5, x2: 40.8, y2: 11.5 })
-      segs.push({ x1: 40.8, y1: 11.5, x2: 40, y2: 11.5 })
-      segs.push({ x1: 34.2, y1: 9.9, x2: 33.8, y2: 10.1 })
-      segs.push({ x1: 34.2, y1: 10.1, x2: 33.8, y2: 9.9 })
+      ;[{ ox: 0, dir: 1 }, { ox: 40, dir: -1 }].forEach(({ ox, dir }) => {
+        const pa = ox + dir * 6  // penalty area depth
+        segs.push({ x1: ox, y1: 2, x2: pa, y2: 2 })
+        segs.push({ x1: pa, y1: 2, x2: pa, y2: 18 })
+        segs.push({ x1: pa, y1: 18, x2: ox, y2: 18 })
+
+        const ga = ox + dir * 3  // goal area depth
+        segs.push({ x1: ox, y1: 6, x2: ga, y2: 6 })
+        segs.push({ x1: ga, y1: 6, x2: ga, y2: 14 })
+        segs.push({ x1: ga, y1: 14, x2: ox, y2: 14 })
+
+        // Goal 3 m wide
+        const gp = ox + dir * 0.8
+        segs.push({ x1: ox, y1: 8.5, x2: gp, y2: 8.5 })
+        segs.push({ x1: gp, y1: 8.5, x2: gp, y2: 11.5 })
+        segs.push({ x1: gp, y1: 11.5, x2: ox, y2: 11.5 })
+
+        // Penalty spot cross
+        const ps = ox + dir * 6
+        segs.push({ x1: ps - 0.2, y1: CY, x2: ps + 0.2, y2: CY })
+        segs.push({ x1: ps, y1: CY - 0.2, x2: ps, y2: CY + 0.2 })
+      })
 
       return segs
     })(),

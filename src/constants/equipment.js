@@ -11,8 +11,18 @@ export const EQUIPMENT_TYPES = [
   { type: 'trampolin',     label: 'Trampolin',        color: '#00bcd4', w: 2.5,  d: 1.5,  h: 1.0,  category: 'Turnen'   },
   { type: 'pferd',         label: 'Pferd',            color: '#9c27b0', w: 1.6,  d: 0.35, h: 1.2,  category: 'Turnen'   },
   { type: 'schwebebalken', label: 'Schwebebalken',    color: '#f48fb1', w: 5.0,  d: 0.1,  h: 1.2,  category: 'Turnen'   },
-  { type: 'huetchen',      label: 'Hütchen',          color: '#ffeb3b', w: 0.3,  d: 0.3,  h: 0.3,  category: 'Sonstiges'},
-  { type: 'huerde',        label: 'Hürde',            color: '#ff9800', w: 1.0,  d: 0.1,  h: 0.8,  category: 'Sonstiges'},
+  { type: 'huetchen',           label: 'Hütchen',              color: '#ffeb3b', w: 0.3,  d: 0.3,  h: 0.3,  category: 'Sonstiges'     },
+  { type: 'huerde',             label: 'Hürde',                color: '#ff9800', w: 1.0,  d: 0.1,  h: 0.8,  category: 'Sonstiges'     },
+  { type: 'unihockeytor',       label: 'Unihockeytor',         color: '#ef5350', w: 1.15, d: 0.65, h: 1.15, category: 'Tor'           },
+  { type: 'malstab',            label: 'Malstab',              color: '#ffd600', w: 0.1,  d: 0.1,  h: 1.5,  category: 'Sonstiges'     },
+  { type: 'toeggel',            label: 'Töggel',               color: '#26c6da', w: 1.4,  d: 0.75, h: 0.9,  category: 'Sonstiges'     },
+  { type: 'dicke-matte',        label: 'Dicke Matte',          color: '#43a047', w: 2.0,  d: 1.0,  h: 0.3,  category: 'Boden'         },
+  { type: '16er-matte',         label: '16er Matte',           color: '#66bb6a', w: 2.0,  d: 1.6,  h: 0.08, category: 'Boden'         },
+  { type: 'kleine-matte',       label: 'Kleine Matte',         color: '#81c784', w: 1.0,  d: 0.6,  h: 0.05, category: 'Boden'         },
+  { type: 'schwedenkasten',     label: 'Schwedenkasten',       color: '#f57c00', w: 0.6,  d: 0.5,  h: 1.2,  category: 'Turnen'        },
+  { type: 'schwedenkasten-teil',label: 'Schwedenkasten Teil',  color: '#fb8c00', w: 0.6,  d: 0.5,  h: 0.3,  category: 'Turnen'        },
+  { type: 'ringe',              label: 'Ringe',                color: '#ab47bc', w: 0.5,  d: 0.5,  h: 2.6,  category: 'Turnen'        },
+  { type: 'hochsprung',         label: 'Hochsprunganlage',     color: '#29b6f6', w: 4.0,  d: 2.0,  h: 2.0,  category: 'Leichtathletik'},
 ]
 
 export function getEquipmentDef(type) {
