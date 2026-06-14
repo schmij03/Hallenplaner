@@ -6,7 +6,7 @@ let nextId = 1
 const useStore = create(
   persist(
     (set, get) => ({
-      view: '2d',
+      view: '3d',
       selectedTool: 'select',
       equipment: [],
       selectedId: null,
