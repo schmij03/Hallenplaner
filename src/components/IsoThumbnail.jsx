@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react'
 import { drawIsoThumbnail } from '../utils/drawIso.js'
 
-const W = 70
-const H = 56
+const W = 60
+const H = 48
 
 export default function IsoThumbnail({ def }) {
   const ref = useRef(null)
