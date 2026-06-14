@@ -240,3 +240,75 @@ canvas {
   pointer-events: none;
   line-height: 1.5;
 }
+
+/* Drawing controls */
+.draw-tool-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 7px;
+}
+
+.draw-mode-btn {
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 4px;
+  font-size: 11px;
+}
+
+.draw-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.draw-color-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.color-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.color-btn:hover { transform: scale(1.15); }
+.color-btn.active { box-shadow: 0 0 0 2px #4af; }
+
+.draw-size-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.size-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 4px;
+  border: 1px solid #1a4a7a;
+  background: transparent;
+  color: #c0c0c0;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.size-btn:hover { background: #1a4a7a; }
+.size-btn.active { background: #1a4a7a; border-color: #4af; color: #fff; }
+
+.size-preview {
+  display: block;
+  width: 80%;
+  background: #888;
+  border-radius: 2px;
+  min-height: 2px;
+}

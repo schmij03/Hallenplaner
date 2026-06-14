@@ -56,12 +56,26 @@ const useStore = create(
       },
 
       clearAll: () => set({ equipment: [], selectedId: null }),
+
+      // Drawing annotations
+      drawings: [],
+      drawColor: '#ef4444',
+      drawLineWidth: 0.12,
+      setDrawColor: (c) => set({ drawColor: c }),
+      setDrawLineWidth: (w) => set({ drawLineWidth: w }),
+      addDrawing: (d) => {
+        const id = String(nextId++)
+        set((s) => ({ drawings: [...s.drawings, { ...d, id }] }))
+      },
+      undoLastDrawing: () => set((s) => ({ drawings: s.drawings.slice(0, -1) })),
+      clearDrawings: () => set({ drawings: [] }),
     }),
     {
       name: 'hallenplaner',
       partialize: (state) => ({
         equipment: state.equipment,
         sportLines: state.sportLines,
+        drawings: state.drawings,
       }),
       onRehydrateStorage: () => (state) => {
         if (state?.equipment?.length > 0) {
