@@ -75,7 +75,7 @@ export default function Equipment3D({ def, selected }) {
             const isTop = i === segs - 1
             return (
               <Box key={i} args={[sw, segH * 0.95, sd]} position={[0, segH * (i + 0.5), 0]}
-                color={isTop ? shade(color, 14) : WOOD} rough={0.75} emissive={isTop ? hl : null} />
+                color={shade(color, isTop ? 14 : -18)} rough={0.75} emissive={isTop ? hl : null} />
             )
           })}
         </group>
@@ -86,7 +86,7 @@ export default function Equipment3D({ def, selected }) {
       const legH = h * 0.85
       return (
         <group>
-          <Box args={[w, h * 0.18, d]} position={[0, h - h * 0.09, 0]} color={WOOD} emissive={hl} />
+          <Box args={[w, h * 0.18, d]} position={[0, h - h * 0.09, 0]} color={color} emissive={hl} />
           {[-1, 1].map((s, i) => (
             <Box key={i} args={[0.08, legH, d * 0.9]} position={[s * (w / 2 - 0.12), legH / 2, 0]} color={WOOD_DK} />
           ))}
@@ -111,7 +111,7 @@ export default function Equipment3D({ def, selected }) {
       const beamH = 0.12
       return (
         <group>
-          <Box args={[w, beamH, d]} position={[0, h - beamH / 2, 0]} color={WOOD} emissive={hl} />
+          <Box args={[w, beamH, d]} position={[0, h - beamH / 2, 0]} color={color} emissive={hl} />
           {[-1, 1].map((s, i) => (
             <Box key={i} args={[0.08, h - beamH, 0.5]} position={[s * (w / 2 - 0.3), (h - beamH) / 2, 0]} color={METAL} />
           ))}
@@ -124,7 +124,7 @@ export default function Equipment3D({ def, selected }) {
       return (
         <group>
           {[-1, 1].map((s, i) => (
-            <Box key={i} args={[w, railH, 0.06]} position={[0, h - railH / 2, s * (d / 2 - 0.05)]} color={WOOD} emissive={hl} />
+            <Box key={i} args={[w, railH, 0.06]} position={[0, h - railH / 2, s * (d / 2 - 0.05)]} color={color} emissive={hl} />
           ))}
           {[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sz], i) => (
             <Box key={i} args={[0.06, h, 0.06]} position={[sx * (w / 2 - 0.15), h / 2, sz * (d / 2 - 0.05)]} color={METAL} />
@@ -136,7 +136,7 @@ export default function Equipment3D({ def, selected }) {
     case 'reck': {
       return (
         <group>
-          <Cyl args={[0.03, 0.03, w, 12]} position={[0, h, 0]} rotation={[0, 0, Math.PI / 2]} color="#e0e0e0" metal={0.6} />
+          <Cyl args={[0.03, 0.03, w, 12]} position={[0, h, 0]} rotation={[0, 0, Math.PI / 2]} color={color} metal={0.3} />
           {[-1, 1].map((s, i) => (
             <Box key={i} args={[0.06, h, 0.06]} position={[s * (w / 2 - 0.05), h / 2, 0]} color={METAL} />
           ))}
@@ -199,7 +199,7 @@ export default function Equipment3D({ def, selected }) {
         <group>
           <mesh position={[0, h - h * 0.15, 0]} castShadow>
             <boxGeometry args={[w, h * 0.3, d]} />
-            <meshStandardMaterial color={WOOD} roughness={0.6} emissive={hl || '#000'} emissiveIntensity={hl ? 0.4 : 0} />
+            <meshStandardMaterial color={color} roughness={0.6} emissive={hl || '#000'} emissiveIntensity={hl ? 0.4 : 0} />
           </mesh>
           {[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sz], i) => (
             <Box key={i} args={[0.06, legH, 0.06]} position={[sx * (w / 2 - 0.1), legH / 2, sz * (d / 2 - 0.06)]} color={METAL} />

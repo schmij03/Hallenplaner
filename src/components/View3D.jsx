@@ -24,7 +24,7 @@ function HallFloor({ onPointerDown, onPointerMove, onPointerUp }) {
         onPointerUp={onPointerUp}
       >
         <planeGeometry args={[HALL_W, HALL_D]} />
-        <meshStandardMaterial color="#eef1f5" roughness={0.95} />
+        <meshStandardMaterial color="#d4a96a" roughness={0.88} />
       </mesh>
       {/* Surrounding area */}
       <mesh position={[HALL_W / 2, -0.01, HALL_D / 2]} rotation={[-Math.PI / 2, 0, 0]}>
