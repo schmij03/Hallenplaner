@@ -2,6 +2,8 @@
 // Context is already translated to item center and rotated before calling.
 // All coordinates are in meters, relative to (0,0).
 
+import { drawPerson } from './drawPerson.js'
+
 function rr(ctx, x, y, w, h, r) {
   const cr = Math.min(r, w / 2, h / 2)
   ctx.beginPath()
@@ -18,6 +20,7 @@ function rr(ctx, x, y, w, h, r) {
 }
 
 export function drawEquipmentShape(ctx, def, isSelected) {
+  if (def.isPerson) return drawPerson(ctx, def, isSelected)
   const { type, w, d, color } = def
   const hw = w / 2
   const hd = d / 2

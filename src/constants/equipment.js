@@ -25,6 +25,13 @@ export const EQUIPMENT_TYPES = [
   { type: 'hochsprung',         label: 'Hochsprunganlage',     color: '#29b6f6', w: 4.0,  d: 2.0,  h: 2.0,  category: 'Leichtathletik'},
 ]
 
+import { PEOPLE } from './people.js'
+
+// All placeable items: equipment + people.
+export const ALL_ITEMS = [...EQUIPMENT_TYPES, ...PEOPLE]
+
+const ITEM_MAP = new Map(ALL_ITEMS.map((i) => [i.type, i]))
+
 export function getEquipmentDef(type) {
-  return EQUIPMENT_TYPES.find((e) => e.type === type) || null
+  return ITEM_MAP.get(type) || null
 }
