@@ -24,6 +24,8 @@ function project(x, y, z, k) {
 export function drawIsoThumbnail(ctx, def, W, H) {
   ctx.clearRect(0, 0, W, H)
   if (def.isPerson) return drawIsoPerson(ctx, def, W, H)
+  if (def.type === 'reifen') return drawIsoReifen(ctx, def, W, H)
+  if (def.type === 'volleyball-netz' || def.type === 'badminton-netz') return drawIsoNet(ctx, def, W, H)
   drawIsoBox(ctx, def, W, H)
 }
 
@@ -145,4 +147,49 @@ function rr(ctx, x, y, w, h, r) {
   ctx.arcTo(x, y, x + w, y, cr)
   ctx.closePath()
   ctx.fill()
+}
+
+function drawIsoReifen(ctx, def, W, H) {
+  const cx = W / 2
+  const cy = H / 2 + 2
+  const r = Math.min(W, H) / 2 - 7
+  const tube = Math.max(3, r * 0.12)
+  const base = hexToRgb(def.color)
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.strokeStyle = shade(base, 15)
+  ctx.lineWidth = tube + 2
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.arc(cx, cy, r, 0, Math.PI * 2)
+  ctx.strokeStyle = `rgb(${base.r},${base.g},${base.b})`
+  ctx.lineWidth = tube
+  ctx.stroke()
+}
+
+function drawIsoNet(ctx, def, W, H) {
+  const pad = 8
+  const x = pad
+  const y = pad + 4
+  const w = W - pad * 2
+  const h = H - pad * 2 - 4
+  const base = hexToRgb(def.color)
+  const col = `rgb(${base.r},${base.g},${base.b})`
+  // Posts
+  ctx.fillStyle = '#9aa3ad'
+  ctx.fillRect(x, y, 4, h)
+  ctx.fillRect(x + w - 4, y, 4, h)
+  // Net mesh
+  ctx.strokeStyle = col
+  ctx.lineWidth = 0.7
+  const sp = 6
+  for (let nx = x + sp; nx < x + w - 4; nx += sp) {
+    ctx.beginPath(); ctx.moveTo(nx, y); ctx.lineTo(nx, y + h); ctx.stroke()
+  }
+  for (let ny = y + sp; ny < y + h; ny += sp) {
+    ctx.beginPath(); ctx.moveTo(x + 4, ny); ctx.lineTo(x + w - 4, ny); ctx.stroke()
+  }
+  ctx.strokeStyle = '#888'
+  ctx.lineWidth = 1.5
+  ctx.strokeRect(x, y, w, h)
 }

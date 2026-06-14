@@ -16,7 +16,7 @@ const LINE_SIZES = [
   { w: 0.22, label: 'Dick' },
 ]
 
-const CATEGORY_ORDER = ['Personen', 'Boden', 'Turnen', 'Tor', 'Leichtathletik', 'Sonstiges']
+const CATEGORY_ORDER = ['Personen', 'Boden', 'Turnen', 'Ballsport', 'Leichtathletik', 'Sonstiges']
 
 export default function Sidebar({ canvasRef, threeRef }) {
   const {

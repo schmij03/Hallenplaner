@@ -25,31 +25,36 @@ export function drawEquipmentShape(ctx, def, isSelected) {
   const hw = w / 2
   const hd = d / 2
   switch (type) {
-    case 'matte':         return drawMat(ctx, hw, hd, color, isSelected, 0.28)
-    case 'dicke-matte':   return drawMat(ctx, hw, hd, color, isSelected, 0.22)
-    case '16er-matte':    return drawMat(ctx, hw, hd, color, isSelected, 0.35)
-    case 'kleine-matte':  return drawMat(ctx, hw, hd, color, isSelected, 0.18)
-    case 'bank':          return drawBench(ctx, hw, hd, color, isSelected)
-    case 'tisch':         return drawTable(ctx, hw, hd, color, isSelected)
+    case 'matte':              return drawMat(ctx, hw, hd, color, isSelected, 0.28)
+    case 'dicke-matte':        return drawMat(ctx, hw, hd, color, isSelected, 0.22)
+    case '16er-matte':         return drawMat(ctx, hw, hd, color, isSelected, 0.35)
+    case 'kleine-matte':       return drawMat(ctx, hw, hd, color, isSelected, 0.18)
+    case 'weichbodenmatte':    return drawMat(ctx, hw, hd, color, isSelected, 0.3)
+    case 'bank':               return drawBench(ctx, hw, hd, color, isSelected)
+    case 'tisch':              return drawTable(ctx, hw, hd, color, isSelected)
     case 'tor':
-    case 'kleines-tor':   return drawGoal(ctx, hw, hd, color, isSelected, true)
-    case 'unihockeytor':  return drawGoal(ctx, hw, hd, color, isSelected, false)
-    case 'basketball':    return drawHoop(ctx, hw, hd, color, isSelected)
-    case 'barren':        return drawParallelBars(ctx, hw, hd, color, isSelected)
-    case 'reck':          return drawHighBar(ctx, hw, hd, color, isSelected)
-    case 'kasten':        return drawBox(ctx, hw, hd, color, isSelected)
-    case 'schwedenkasten':      return drawSwedishBox(ctx, hw, hd, color, isSelected)
-    case 'schwedenkasten-teil': return drawBoxPart(ctx, hw, hd, color, isSelected)
-    case 'trampolin':     return drawTrampoline(ctx, hw, hd, color, isSelected)
-    case 'pferd':         return drawHorse(ctx, hw, hd, color, isSelected)
-    case 'schwebebalken': return drawBeam(ctx, hw, hd, color, isSelected)
-    case 'ringe':         return drawRings(ctx, hw, hd, color, isSelected)
-    case 'hochsprung':    return drawHighJump(ctx, hw, hd, color, isSelected)
-    case 'huetchen':      return drawCone(ctx, hw, hd, color, isSelected)
-    case 'huerde':        return drawHurdle(ctx, hw, hd, color, isSelected)
-    case 'malstab':       return drawPost(ctx, hw, hd, color, isSelected)
-    case 'toeggel':       return drawFoosball(ctx, hw, hd, color, isSelected)
-    default:              return drawDefault(ctx, hw, hd, color, isSelected)
+    case 'kleines-tor':        return drawGoal(ctx, hw, hd, color, isSelected, true)
+    case 'unihockeytor':       return drawGoal(ctx, hw, hd, color, isSelected, false)
+    case 'basketball':         return drawHoop(ctx, hw, hd, color, isSelected)
+    case 'volleyball-netz':
+    case 'badminton-netz':     return drawNet(ctx, hw, hd, color, isSelected)
+    case 'barren':             return drawParallelBars(ctx, hw, hd, color, isSelected)
+    case 'reck':               return drawHighBar(ctx, hw, hd, color, isSelected)
+    case 'kasten':             return drawBox(ctx, hw, hd, color, isSelected)
+    case 'schwedenkasten':     return drawSwedishBox(ctx, hw, hd, color, isSelected)
+    case 'schwedenkasten-teil':return drawBoxPart(ctx, hw, hd, color, isSelected)
+    case 'trampolin':          return drawTrampoline(ctx, hw, hd, color, isSelected)
+    case 'pferd':
+    case 'sprungbock':         return drawHorse(ctx, hw, hd, color, isSelected)
+    case 'schwebebalken':      return drawBeam(ctx, hw, hd, color, isSelected)
+    case 'ringe':              return drawRings(ctx, hw, hd, color, isSelected)
+    case 'hochsprung':         return drawHighJump(ctx, hw, hd, color, isSelected)
+    case 'huetchen':           return drawCone(ctx, hw, hd, color, isSelected)
+    case 'huerde':             return drawHurdle(ctx, hw, hd, color, isSelected)
+    case 'reifen':             return drawReifen(ctx, hw, hd, color, isSelected)
+    case 'malstab':            return drawPost(ctx, hw, hd, color, isSelected)
+    case 'toeggel':            return drawFoosball(ctx, hw, hd, color, isSelected)
+    default:                   return drawDefault(ctx, hw, hd, color, isSelected)
   }
 }
 
@@ -446,4 +451,38 @@ function drawFoosball(ctx, hw, hd, color, isSel) {
   ctx.strokeStyle = isSel ? '#fff' : 'rgba(0,0,0,0.55)'
   ctx.lineWidth = isSel ? 0.065 : 0.04
   ctx.strokeRect(-hw, -hd, hw * 2, hd * 2)
+}
+
+function drawNet(ctx, hw, hd, color, isSel) {
+  ctx.fillStyle = isSel ? 'rgba(220,220,220,0.55)' : 'rgba(200,200,200,0.3)'
+  ctx.fillRect(-hw, -hd, hw * 2, hd * 2)
+  ctx.strokeStyle = 'rgba(140,140,140,0.5)'
+  ctx.lineWidth = 0.012
+  const sp = 0.18
+  for (let x = -hw + sp; x < hw; x += sp) {
+    ctx.beginPath(); ctx.moveTo(x, -hd); ctx.lineTo(x, hd); ctx.stroke()
+  }
+  for (let y = -hd + sp; y < hd; y += sp) {
+    ctx.beginPath(); ctx.moveTo(-hw, y); ctx.lineTo(hw, y); ctx.stroke()
+  }
+  ctx.strokeStyle = isSel ? '#fff' : '#888'
+  ctx.lineWidth = isSel ? 0.07 : 0.04
+  ctx.strokeRect(-hw, -hd, hw * 2, hd * 2)
+}
+
+function drawReifen(ctx, hw, hd, color, isSel) {
+  const r = Math.min(hw, hd) * 0.9
+  const tube = Math.max(0.025, r * 0.1)
+  ctx.beginPath()
+  ctx.arc(0, 0, r, 0, Math.PI * 2)
+  ctx.fillStyle = 'rgba(0,0,0,0.04)'
+  ctx.fill()
+  ctx.beginPath()
+  ctx.arc(0, 0, r, 0, Math.PI * 2)
+  ctx.strokeStyle = isSel ? '#fff' : color
+  ctx.lineWidth = tube
+  ctx.stroke()
+  ctx.strokeStyle = 'rgba(0,0,0,0.25)'
+  ctx.lineWidth = tube * 0.25
+  ctx.stroke()
 }
