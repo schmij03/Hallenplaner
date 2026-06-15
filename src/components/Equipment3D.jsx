@@ -1,4 +1,5 @@
 import React from 'react'
+import * as THREE from 'three'
 
 // Composite 3D models for equipment, built centered on X/Z with base at y=0.
 // def.w = size along X, def.d = size along Z, def.h = height along Y.
@@ -49,7 +50,8 @@ export default function Equipment3D({ def, selected }) {
     case 'matte':
     case 'dicke-matte':
     case '16er-matte':
-    case 'kleine-matte': {
+    case 'kleine-matte':
+    case 'weichbodenmatte': {
       const pad = Math.min(w, d) * 0.12
       return (
         <group>
@@ -144,6 +146,36 @@ export default function Equipment3D({ def, selected }) {
       )
     }
 
+    case 'volleyball-netz':
+    case 'badminton-netz': {
+      const bar = 0.06
+      return (
+        <group>
+          {[-1, 1].map((s, i) => (
+            <Box key={i} args={[bar, h + 0.3, bar]} position={[s * (w / 2 - bar / 2), (h + 0.3) / 2, 0]} color={METAL} />
+          ))}
+          <mesh position={[0, h / 2, 0]}>
+            <planeGeometry args={[w - bar, h]} />
+            <meshStandardMaterial color="#e8e8e8" transparent opacity={0.55} wireframe />
+          </mesh>
+          <mesh position={[0, h / 2, 0]}>
+            <planeGeometry args={[w - bar, h]} />
+            <meshStandardMaterial color="#f0f0f0" transparent opacity={0.18} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+      )
+    }
+
+    case 'reifen': {
+      const r = Math.min(w, d) / 2 * 0.88
+      return (
+        <mesh position={[0, 0.03, 0]} rotation={[-Math.PI / 2, 0, 0]} castShadow>
+          <torusGeometry args={[r, 0.03, 8, 32]} />
+          <meshStandardMaterial color={color} roughness={0.5} emissive={hl || '#000'} emissiveIntensity={hl ? 0.4 : 0} />
+        </mesh>
+      )
+    }
+
     case 'tor':
     case 'kleines-tor':
     case 'unihockeytor': {
@@ -189,6 +221,21 @@ export default function Equipment3D({ def, selected }) {
           ))}
           <Box args={[w, 0.1, d]} position={[0, frameH, 0]} color={shade(color, -10)} emissive={hl} />
           <Box args={[w - 0.3, 0.04, d - 0.3]} position={[0, frameH + 0.04, 0]} color={shade(color, 20)} rough={0.5} />
+        </group>
+      )
+    }
+
+    case 'sprungbock': {
+      const legH = h * 0.82
+      return (
+        <group>
+          <mesh position={[0, h - h * 0.13, 0]} castShadow>
+            <boxGeometry args={[w, h * 0.26, d]} />
+            <meshStandardMaterial color={color} roughness={0.85} emissive={hl || '#000'} emissiveIntensity={hl ? 0.4 : 0} />
+          </mesh>
+          {[[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([sx, sz], i) => (
+            <Box key={i} args={[0.04, legH, 0.04]} position={[sx * (w / 2 - 0.03), legH / 2, sz * (d / 2 - 0.05)]} color={METAL} />
+          ))}
         </group>
       )
     }
